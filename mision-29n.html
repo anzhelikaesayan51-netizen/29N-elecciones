@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidato Único: Misión 29-N España</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #475569;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #d97706;
+            --bg: #f8fafc;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-container {
+            background-color: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(30, 58, 138, 0.1);
+            max-width: 650px;
+            width: 100%;
+        }
+        h1 { color: var(--primary); text-align: center; margin-top: 0; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #64748b; font-style: italic; margin-bottom: 30px; }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 1px solid #e2e8f0;
+        }
+        #pop-val { color: #2563eb; }
+        #cred-val { color: var(--warning); }
+
+        .card {
+            background-color: #fffbeb;
+            border: 2px solid #fef3c7;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+        .card h2 { color: #b45309; margin-top: 0; font-size: 1.3rem; }
+        .card p { line-height: 1.6; color: #475569; text-align: justify; }
+
+        .trigger-box {
+            margin-top: 20px;
+            background-color: #fef3c7;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 5px solid #d97706;
+            font-size: 0.95rem;
+        }
+        .trigger-box code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1.05rem;
+            color: #b45309;
+        }
+
+        .input-section { display: flex; flex-direction: column; gap: 12px; }
+        textarea {
+            width: 100%;
+            height: 110px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: none;
+            transition: border-color 0.3s;
+        }
+        textarea:focus { outline: none; border-color: var(--primary); }
+
+        .btn-group { display: grid; grid-template-columns: 3fr 1fr; gap: 10px; }
+        button {
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: #1e40af; }
+        .btn-secondary { background-color: #e2e8f0; color: var(--secondary); }
+        .btn-secondary:hover { background-color: #cbd5e1; }
+
+        .hint-box {
+            background-color: #f0fdf4;
+            border: 1px dashed var(--success);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #166534;
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            line-height: 1.5;
+            display: none;
+        }
+        .feedback.success { display: block; background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .feedback.error { display: block; background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        .final-stats { display: grid; gap: 12px; margin: 25px 0; }
+        .final-result {
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .final-container button { width: 100%; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="game">
+        <h1>🗳️ 29-N: Estrategia y Subjuntivo</h1>
+        <p class="subtitle">Asume el liderazgo político en solitario y gestiona la crisis interior de España</p>
+
+        <!-- Cuadro de mandos del candidato -->
+        <div class="dashboard">
+            <div class="stat-card">📊 Intención de Voto: <span id="pop-val">45</span>%</div>
+            <div class="stat-card">🤝 Credibilidad Política: <span id="cred-val">50</span>%</div>
+        </div>
+
+        <!-- Escenario de crisis actual -->
+        <div class="card">
+            <h2 id="crisis-title">Actualizando datos parlamentarios...</h2>
+            <p id="crisis-desc">Por favor, espere mientras se carga el escenario electoral...</p>
+            <div class="trigger-box">
+                <strong>💡 Requisito discursivo:</strong> Inicia tu respuesta obligatoriamente con: <code id="crisis-trigger">...</code>
+            </div>
+        </div>
+
+        <!-- Espacio de redacción del alumno -->
+        <div class="input-section">
+            <textarea id="user-input" placeholder="Escribe aquí tu propuesta oficial a los medios..."></textarea>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="evaluateSpeech()">Publicar Comunicado</button>
+                <button class="btn-secondary" onclick="toggleHint()">💡 Pista</button>
+            </div>
+            <div id="hint-text" class="hint-box"></div>
+        </div>
+
+        <!-- Informe de impacto político -->
+        <div id="feedback-box" class="feedback"></div>
+    </div>
+
+<script>
+    // Base de datos de retos (Estrategia, Gramática e Historial Político Español)
+    const campaignCrises = [
+        {
+            title: "🏠 El colapso del decreto de vivienda y desahucios",
+            desc: "Las Cortes se disuelven de cara al 29-N tras la caída de los decretos de vivienda en el Parlamento. Con desahucios mediáticos encendiendo las protestas sociales, la ciudadanía exige medidas contundentes contra la especulación inmobiliaria.",
+            trigger: "Es intolerable que los fondos de inversión...",
+            hints: "Intenta usar verbos como: compren, especulen, suban, echen, controlen, o encarezcan.",
+            subjunctives: ["compren", "especulen", "suban", "echen", "tengan", "puedan", "controlen", "eleven", "dejen", "encarezcan", "adquieran"]
+        },
+        {
+            title: "📈 Inflación y la cesta de la compra",
+            desc: "Los supermercados en España registran una subida de precios histórica en alimentos básicos. Los sindicatos presionan en plena precampaña y la oposición te acusa de pasividad económica ante el mercado libre.",
+            trigger: "No creo que los precios de los alimentos...",
+            hints: "Intenta usar verbos como: bajen, caigan, disminuyan, cambien, se estabilicen, o sigan.",
+            subjunctives: ["bajen", "caigan", "disminuyan", "cambien", "se estabilicen", "sigan", "solucionen", "regulen", "afecten"]
+        },
+        {
+            title: "🌍 Presión migratoria en las fronteras de Ceuta",
+            desc: "Una llegada masiva de migrantes satura por completo las capacidades de atención en Ceuta. El debate televisado se polariza al extremo y debes fijar una propuesta institucional impecable que involucre al bloque europeo.",
+            trigger: "Para que el sistema no colapse, es necesario que la Unión Europea...",
+            hints: "Intenta usar verbos como: ayude, financie, envíe, coordine, asuma, coopere, o intervenga.",
+            subjunctives: ["ayude", "financie", "envíe", "participe", "asuma", "coopere", "intervenga", "aporte", "gestione", "coordine"]
+        },
+        {
+            title: "💼 Fragmentación de la izquierda: El laberinto del Frente Amplio",
+            desc: "Las negociaciones entre Ada Colau (Frente Amplio) y Podemos se rompen definitivamente en las provincias rurales. El voto progresista corre el riesgo de dividirse, lo que podría dar la victoria al bloque PP-Vox.",
+            trigger: "Es fundamental que las fuerzas progresistas...",
+            hints: "Intenta usar verbos como: se unan, pacten, escuchen, concentren, entiendan, o colaboren.",
+            subjunctives: ["entiendan", "voten", "apoyen", "concentren", "vean", "sepan", "unan", "se unan", "eviten", "pacten", "colaboren", "escuchen"]
+        }
+    ];
+
+    let currentStep = 0;
+    let voteIntent = 45;
+    let credibility = 50;
+
+    function renderCrisis() {
+        if (currentStep >= campaignCrises.length) {
+            showFinalScreen();
+            return;
+        }
+        const crisis = campaignCrises[currentStep];
+        document.getElementById("crisis-title").innerText = crisis.title;
+        document.getElementById("crisis-desc").innerText = crisis.desc;
+        document.getElementById("crisis-trigger").innerText = crisis.trigger;
+        document.getElementById("user-input").value = "";
+        const hintBox = document.getElementById("hint-text");
+        hintBox.style.display = "none";
+        hintBox.innerText = crisis.hints;
+        document.getElementById("feedback-box").className = "feedback";
+    }
+
+    function showFinalScreen() {
+        let finalRating;
+        if (voteIntent >= 60 && credibility >= 60) {
+            finalRating = "🏆 ¡Victoria Absoluta! Has ganado las elecciones del 29-N en solitario y tienes la fuerza para formar un gobierno estable sin bloqueos.";
+        } else if (voteIntent >= 48) {
+            finalRating = "🤝 Pacto de Coalición. No lograste la mayoría absoluta, pero tu impecable dominio discursivo en campaña te sitúa como el líder indispensable para negociar el gobierno.";
+        } else {
+            finalRating = "📉 Derrota Electoral. Los errores gramaticales y la falta de propuestas sólidas han hundido tu credibilidad. Te diriges directamente a la oposición.";
+        }
+
+        document.getElementById("game").innerHTML = `
+            <div class="final-container">
+                <h1>🏁 Escrutinio Final del 29-N</h1>
+                <p class="subtitle">Resultados definitivos de la campaña electoral</p>
+                <div class="dashboard final-stats">
+                    <div class="stat-card">📊 Voto Final: <span style="color:#2563eb">${Math.max(0, Math.min(voteIntent, 100))}%</span></div>
+                    <div class="stat-card">🤝 Credibilidad: <span style="color:var(--warning)">${Math.max(0, Math.min(credibility, 100))}%</span></div>
+                </div>
+                <div class="final-result">${finalRating}</div>
+                <button class="btn-primary" onclick="location.reload()">Iniciar nueva campaña</button>
+            </div>
+        `;
+    }
+
+    function toggleHint() {
+        const hintBox = document.getElementById("hint-text");
+        hintBox.style.display = (hintBox.style.display === "none" || hintBox.style.display === "") ? "block" : "none";
+    }
+
+    function evaluateSpeech() {
+        const text = document.getElementById("user-input").value.trim().toLowerCase();
+        const crisis = campaignCrises[currentStep];
+        const feedback = document.getElementById("feedback-box");
+
+        // Limpiar el disparador para la validación de coincidencia
+        const requiredBase = crisis.trigger.replace("...", "").toLowerCase().trim();
+
+        // 1. ¿Incluyó la estructura inicial obligatoria?
+        if (!text.includes(requiredBase)) {
+            feedback.innerText = `⚠️ Error de Comunicación: Para tener impacto político en este debate, tu respuesta debe empezar exactamente con la estructura obligatoria: "${crisis.trigger}"`;
+            feedback.className = "feedback error";
+            return;
+        }
+
+        // 2. ¿Usó un presente de subjuntivo válido?
+        const hasSubjunctive = crisis.subjunctives.some(verb => text.includes(verb));
+
+        if (hasSubjunctive) {
+            voteIntent += 8;
+            credibility += 10;
+            feedback.innerText = "✨ ¡Estrategia Exitosa! Los medios elogian tu precisión verbal en el uso del presente de subjuntivo. Ganas terreno en las encuestas oficiales.";
+            feedback.className = "feedback success";
+            document.getElementById("pop-val").innerText = Math.min(voteIntent, 100);
+            document.getElementById("cred-val").innerText = Math.min(credibility, 100);
+            currentStep++;
+            setTimeout(renderCrisis, 3500);
+        } else {
+            voteIntent -= 5;
+            credibility -= 8;
+            feedback.innerText = "❌ Error Discursivo: No se ha detectado el uso del presente de subjuntivo o el verbo está mal conjugado (ej. uso incorrecto del indicativo). Tus oponentes aprovechan el tropiezo en redes sociales.";
+            feedback.className = "feedback error";
+            document.getElementById("pop-val").innerText = Math.max(voteIntent, 0);
+            document.getElementById("cred-val").innerText = Math.max(credibility, 0);
+        }
+    }
+
+    window.onload = renderCrisis;
+</script>
+</body>
+</html>
